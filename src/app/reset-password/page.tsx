@@ -1,11 +1,11 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, Suspense, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { apiFetch } from "@/lib/api";
 
-export default function ResetPasswordPage() {
+function ResetPasswordContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token") || "";
 
@@ -82,5 +82,24 @@ export default function ResetPasswordPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen bg-white px-6 py-10">
+          <div className="mx-auto max-w-md rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+            <h1 className="text-2xl font-semibold text-slate-900">
+              Reset Password
+            </h1>
+            <p className="mt-2 text-sm text-slate-600">Loading...</p>
+          </div>
+        </main>
+      }
+    >
+      <ResetPasswordContent />
+    </Suspense>
   );
 }
