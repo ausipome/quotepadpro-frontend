@@ -53,7 +53,7 @@ export default function SiteHeader() {
             href="/signup"
             className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700"
           >
-            Start Free
+            Start free trial
           </Link>
         </div>
 
@@ -100,7 +100,7 @@ export default function SiteHeader() {
                   onClick={() => setOpen(false)}
                   className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-medium text-white"
                 >
-                  Start Free
+                  Start free trial
                 </Link>
               </div>
             </div>

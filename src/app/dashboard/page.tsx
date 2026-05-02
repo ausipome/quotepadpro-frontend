@@ -5,6 +5,7 @@ import { apiFetch } from "@/lib/api";
 import Link from "next/link";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { useAuth } from "@/components/auth/AuthProvider";
+import AppTopBar from "@/components/navigation/AppTopBar";
 
 export default function DashboardPage() {
   const { user, logout } = useAuth();
@@ -43,6 +44,7 @@ export default function DashboardPage() {
   return (
     <RequireAuth>
       <main className="min-h-screen bg-white">
+        <AppTopBar />
         <div className="mx-auto max-w-[1080px] px-6 py-8">
           <div className="mb-8 flex flex-col gap-4 rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm md:flex-row md:items-center md:justify-between">
             <div>

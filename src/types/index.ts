@@ -7,6 +7,9 @@ export type User = {
   phone: string;
   logoUrl: string;
   logoFilename?: string;
+  stripeCustomerId?: string;
+  stripeSubscriptionId?: string;
+  subscriptionStatus?: string;
 };
 
 export type AuthResponse = {

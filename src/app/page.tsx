@@ -65,7 +65,7 @@ export default function HomePage() {
                   href="/signup"
                   className="rounded-xl bg-emerald-600 px-5 py-3 text-sm font-medium text-white hover:bg-emerald-700"
                 >
-                  Start Free
+                  Start free trial
                 </Link>
                 <a
                   href="#example"
@@ -176,22 +176,22 @@ export default function HomePage() {
                 Simple pricing, no clutter
               </h2>
               <p className="mt-3 max-w-[620px] text-sm leading-7 text-emerald-50">
-                Start with a clean quoting workflow and grow into a polished system
-                your customers actually enjoy using.
+                Start with a 30 day free trial, then keep your quoting workflow polished for £5/month.
               </p>
             </div>
 
             <div className="rounded-[28px] bg-white p-6 text-slate-900">
               <div className="text-sm font-medium text-slate-500">Launch plan</div>
               <div className="mt-2 text-4xl font-semibold">£5/mo</div>
+              <p className="mt-1 text-sm font-medium text-emerald-700">30 day free trial included</p>
               <p className="mt-2 text-sm text-slate-600">
-                Clean quoting, customer management and public quote links.
+                Clean quoting, customer management, quote emailing and public quote links.
               </p>
               <Link
                 href="/signup"
                 className="mt-5 inline-flex rounded-xl bg-emerald-600 px-5 py-3 text-sm font-medium text-white hover:bg-emerald-700"
               >
-                Start Free
+                Start free trial
               </Link>
             </div>
           </div>

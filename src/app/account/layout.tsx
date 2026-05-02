@@ -1,4 +1,5 @@
 import { RequireAuth } from "@/components/auth/RequireAuth";
+import AppTopBar from "@/components/navigation/AppTopBar";
 
 export default function AccountLayout({
   children,
@@ -7,7 +8,10 @@ export default function AccountLayout({
 }) {
   return (
     <RequireAuth>
-      <section>{children}</section>
+      <section className="min-h-screen bg-white">
+        <AppTopBar />
+        {children}
+      </section>
     </RequireAuth>
   );
 }
