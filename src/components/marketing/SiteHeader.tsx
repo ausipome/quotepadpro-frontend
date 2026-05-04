@@ -9,7 +9,7 @@ import { BRAND_LOGO_URL } from "@/lib/branding";
 const navItems = [
   { label: "Features", href: "#features" },
   { label: "How it works", href: "#how-it-works" },
-  { label: "Example", href: "#example" },
+  { label: "Who it's for", href: "#who-its-for" },
   { label: "Pricing", href: "#pricing" },
 ];
 

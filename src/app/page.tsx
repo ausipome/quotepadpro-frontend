@@ -69,10 +69,10 @@ export default function HomePage() {
                   Start free trial
                 </Link>
                 <a
-                  href="#example"
+                  href="#who-its-for"
                   className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50"
                 >
-                  See Example Quote
+                  Who it&apos;s for
                 </a>
               </div>
             </motion.div>
@@ -147,27 +147,31 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="example" className="bg-slate-50 py-14 lg:py-20">
+      <section id="who-its-for" className="bg-slate-50 py-14 lg:py-20">
       <div className="mx-auto max-w-[1180px] px-6">
-        <div className="grid gap-8 rounded-[32px] bg-white p-8 shadow-sm lg:grid-cols-[1fr_auto] lg:items-center">
-          <div>
-            <div className="text-sm font-semibold uppercase tracking-[0.18em] text-emerald-600">
-              Example quote
-            </div>
-            <h2 className="mt-2 text-3xl font-semibold tracking-tight">
-              Clean, branded quotes your customers can accept online
-            </h2>
-            <p className="mt-3 max-w-[680px] text-sm leading-7 text-slate-600">
-              The quote layout is designed to feel simple, professional and easy to approve — without making your customer fight through clutter.
-            </p>
+        <div className="mb-8 max-w-[720px]">
+          <div className="text-sm font-semibold uppercase tracking-[0.18em] text-emerald-600">
+            Who it’s for
           </div>
+          <h2 className="mt-2 text-3xl font-semibold tracking-tight">
+            Built for small businesses that need quotes out quickly
+          </h2>
+          <p className="mt-3 text-sm leading-7 text-slate-600">
+            QuotePadPro is ideal for trades, services and growing businesses that want professional quotes without complicated software.
+          </p>
+        </div>
 
-          <Link
-            href="/signup"
-            className="inline-flex rounded-xl bg-emerald-600 px-5 py-3 text-sm font-medium text-white hover:bg-emerald-700"
-          >
-            Start free trial
-          </Link>
+        <div className="grid gap-4 md:grid-cols-3">
+          {[
+            ["Trades", "Electricians, plumbers, decorators, builders and installers."],
+            ["Services", "Gardeners, cleaners, repair businesses and local service teams."],
+            ["Small businesses", "Anyone who wants branded quotes, customer records and online acceptance."]
+          ].map(([title, body]) => (
+            <div key={title} className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
+              <h3 className="text-xl font-semibold tracking-tight">{title}</h3>
+              <p className="mt-3 text-sm leading-7 text-slate-600">{body}</p>
+            </div>
+          ))}
         </div>
       </div>
     </section>
