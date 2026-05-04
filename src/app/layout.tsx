@@ -1,5 +1,6 @@
 import "./globals.css";
 import { AuthProvider } from "@/components/auth/AuthProvider";
+import CookieConsent from "@/components/CookieConsent";
 
 export const metadata = {
   title: "QuotePadPro",
@@ -14,7 +15,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          {children}
+          <CookieConsent />
+        </AuthProvider>
       </body>
     </html>
   );

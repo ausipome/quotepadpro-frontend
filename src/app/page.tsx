@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import SiteHeader from "@/components/marketing/SiteHeader";
 import ExampleQuoteCard from "@/components/marketing/ExampleQuoteCard";
+import SiteFooter from "@/components/marketing/SiteFooter";
 
 function FeatureCard({
   title,
@@ -147,23 +148,29 @@ export default function HomePage() {
       </section>
 
       <section id="example" className="bg-slate-50 py-14 lg:py-20">
-        <div className="mx-auto max-w-[1180px] px-6">
-          <div className="mb-8 max-w-[700px]">
+      <div className="mx-auto max-w-[1180px] px-6">
+        <div className="grid gap-8 rounded-[32px] bg-white p-8 shadow-sm lg:grid-cols-[1fr_auto] lg:items-center">
+          <div>
             <div className="text-sm font-semibold uppercase tracking-[0.18em] text-emerald-600">
-              Example
+              Example quote
             </div>
             <h2 className="mt-2 text-3xl font-semibold tracking-tight">
-              A stripped-back quote that still looks premium
+              Clean, branded quotes your customers can accept online
             </h2>
-            <p className="mt-3 text-sm leading-7 text-slate-600">
-              The example below shows the style of quote your customers receive:
-              clean layout, clear pricing and a professional summary.
+            <p className="mt-3 max-w-[680px] text-sm leading-7 text-slate-600">
+              The quote layout is designed to feel simple, professional and easy to approve — without making your customer fight through clutter.
             </p>
           </div>
 
-          <ExampleQuoteCard />
+          <Link
+            href="/signup"
+            className="inline-flex rounded-xl bg-emerald-600 px-5 py-3 text-sm font-medium text-white hover:bg-emerald-700"
+          >
+            Start free trial
+          </Link>
         </div>
-      </section>
+      </div>
+    </section>
 
       <section id="pricing" className="mx-auto max-w-[1180px] px-6 py-14 lg:py-20">
         <div className="rounded-[32px] bg-emerald-600 px-8 py-10 text-white shadow-sm">
@@ -197,6 +204,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      <SiteFooter />
     </main>
   );
 }
