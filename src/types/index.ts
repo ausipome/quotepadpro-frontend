@@ -4,6 +4,7 @@ export type User = {
   email: string;
   emailVerified: boolean;
   businessName: string;
+  businessAddress: string;
   phone: string;
   logoUrl: string;
   logoFilename?: string;
@@ -74,6 +75,7 @@ export type PublicQuoteResponse = {
   owner: {
     name: string;
     businessName: string;
+    businessAddress: string;
     phone: string;
     logoUrl: string;
     email: string;

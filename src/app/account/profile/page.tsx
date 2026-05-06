@@ -15,6 +15,7 @@ export default function ProfilePage() {
   const [form, setForm] = useState({
     name: "",
     businessName: "",
+    businessAddress: "",
     phone: "",
   });
 
@@ -30,12 +31,13 @@ export default function ProfilePage() {
     setForm({
       name: user.name || "",
       businessName: user.businessName || "",
+      businessAddress: user.businessAddress || "",
       phone: user.phone || "",
     });
   }, [user]);
 
   function updateField(
-    key: "name" | "businessName" | "phone",
+    key: "name" | "businessName" | "businessAddress" | "phone",
     value: string
   ) {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -182,6 +184,18 @@ export default function ProfilePage() {
 
               <div>
                 <label className="mb-1 block text-sm font-medium text-slate-700">
+                  Business Address
+                </label>
+                <textarea
+                  value={form.businessAddress}
+                  onChange={(e) => updateField("businessAddress", e.target.value)}
+                  className="min-h-24 w-full rounded-xl border border-slate-200 px-3 py-2 text-slate-900 placeholder:text-slate-400"
+                  placeholder="Business address shown on quotes"
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-medium text-slate-700">
                   Phone
                 </label>
                 <input
@@ -261,6 +275,9 @@ export default function ProfilePage() {
                   <div className="font-semibold text-slate-900">
                     {form.businessName || form.name || "Your Business"}
                   </div>
+                  {user?.businessAddress ? (
+                      <div className="whitespace-pre-wrap">{user.businessAddress}</div>
+                    ) : null}
                   {user?.email ? <div>{user.email}</div> : null}
                   {form.phone ? <div>{form.phone}</div> : null}
                 </div>

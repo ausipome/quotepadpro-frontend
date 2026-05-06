@@ -34,6 +34,9 @@ export default function AppTopBar({ showAuthLinks = false }: AppTopBarProps) {
             <Link href="/account/quotes" className="hidden rounded-xl px-3 py-2 font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 sm:inline-flex">
               Quotes
             </Link>
+            <Link href="/account/address-book" className="hidden rounded-xl px-3 py-2 font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 md:inline-flex">
+              Address Book
+            </Link>
             <Link href="/account/profile" className="hidden rounded-xl px-3 py-2 font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 md:inline-flex">
               Profile
             </Link>

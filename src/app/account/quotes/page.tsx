@@ -2,7 +2,7 @@ import QuoteFlow from "@/components/quotes/QuoteFlow";
 
 export default function Page() {
   return (
-    <div className="min-w-[400px]">
+    <div className="w-full px-4 sm:px-6">
       <QuoteFlow />
     </div>
   );

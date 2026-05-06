@@ -371,6 +371,9 @@ export default function QuoteBuilder({
             <div className="font-medium text-slate-900">
               {user?.businessName || user?.name || "Your Business"}
             </div>
+            {user?.businessAddress ? (
+              <div className="whitespace-pre-wrap">{user.businessAddress}</div>
+            ) : null}
             {user?.phone ? <div>{user.phone}</div> : null}
             {user?.email ? <div>{user.email}</div> : null}
           </div>
@@ -608,10 +611,12 @@ export default function QuoteBuilder({
               <span>Subtotal</span>
               <span>{formatMoney(subtotal)}</span>
             </div>
-            <div className="flex justify-between text-slate-600">
-              <span>Discount</span>
-              <span>-{formatMoney(discountAmount)}</span>
-            </div>
+            {discountAmount > 0 ? (
+                <div className="flex justify-between text-slate-600">
+                  <span>Discount</span>
+                  <span>-{formatMoney(discountAmount)}</span>
+                </div>
+              ) : null}
             <div className="flex justify-between text-slate-600">
               <span>VAT</span>
               <span>{formatMoney(vatAmount)}</span>

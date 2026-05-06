@@ -93,6 +93,9 @@ export default async function PublicQuotePage({
             <div className="font-medium text-gray-900">
               {owner.businessName || owner.name}
             </div>
+            {owner.businessAddress ? (
+              <div className="whitespace-pre-wrap">{owner.businessAddress}</div>
+            ) : null}
             {owner.phone ? <div>{owner.phone}</div> : null}
             {owner.email ? <div>{owner.email}</div> : null}
           </div>
@@ -175,10 +178,12 @@ export default async function PublicQuotePage({
               <span>Subtotal</span>
               <span>{formatMoney(quote.subtotal)}</span>
             </div>
-            <div className="flex justify-between">
-              <span>Discount</span>
-              <span>-{formatMoney(quote.discountValue)}</span>
-            </div>
+            {quote.discountValue > 0 ? (
+              <div className="flex justify-between">
+                <span>Discount</span>
+                <span>-{formatMoney(quote.discountValue)}</span>
+              </div>
+            ) : null}
             <div className="flex justify-between">
               <span>VAT</span>
               <span>{formatMoney(quote.vatAmount)}</span>

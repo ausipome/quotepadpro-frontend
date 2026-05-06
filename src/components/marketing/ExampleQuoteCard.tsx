@@ -5,6 +5,19 @@ import Image from "next/image";
 import { BRAND_LOGO_URL } from "@/lib/branding";
 
 export default function ExampleQuoteCard() {
+const createdDate = new Date();
+
+const expiryDate = new Date();
+expiryDate.setDate(createdDate.getDate() + 7);
+
+function formatDate(date: Date) {
+  return date.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 18, rotate: -1.2 }}
@@ -27,11 +40,11 @@ export default function ExampleQuoteCard() {
                 </div>
                 <div>
                   <span className="font-medium text-slate-900">Created:</span>{" "}
-                  23 Apr 2026
+                  {formatDate(createdDate)}
                 </div>
                 <div>
                   <span className="font-medium text-slate-900">Expiry Date:</span>{" "}
-                  30 Apr 2026
+                  {formatDate(expiryDate)}
                 </div>
               </div>
             </div>
@@ -49,6 +62,8 @@ export default function ExampleQuoteCard() {
               <div className="font-semibold text-slate-900">QuotePadPro Electrical</div>
               <div>martyn@quotepadpro.com</div>
               <div>07400 000000</div>
+              <div>12 Riverside Court</div>
+              <div>Solva, SA64 1AA</div>
             </div>
           </div>
         </div>

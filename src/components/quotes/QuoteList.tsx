@@ -41,17 +41,17 @@ export default function QuoteList({ onNewQuoteClick, onOpenQuote }: Props) {
           </p>
         </div>
 
-        <div className="flex gap-3">
+        <div className="grid w-full grid-cols-2 gap-2 sm:w-auto sm:flex">
           <Link
             href="/dashboard"
-            className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
+            className="inline-flex justify-center rounded-xl px-3 py-2 text-sm rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
           >
             Dashboard
           </Link>
 
           <Link
             href="/account/address-book"
-            className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
+            className="inline-flex justify-center rounded-xl px-3 py-2 text-sm rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
           >
             Address Book
           </Link>
@@ -59,7 +59,7 @@ export default function QuoteList({ onNewQuoteClick, onOpenQuote }: Props) {
           <button
             type="button"
             onClick={onNewQuoteClick}
-            className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700"
+            className="inline-flex justify-center rounded-xl px-3 py-2 text-sm rounded-xl bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700"
           >
             + New Quote
           </button>
