@@ -6,6 +6,26 @@ import SiteHeader from "@/components/marketing/SiteHeader";
 import ExampleQuoteCard from "@/components/marketing/ExampleQuoteCard";
 import SiteFooter from "@/components/marketing/SiteFooter";
 
+const fadeUp = {
+  hidden: { opacity: 0, y: 28 },
+  show: { opacity: 1, y: 0 },
+};
+
+const staggerGroup = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.12,
+      delayChildren: 0.12,
+    },
+  },
+};
+
+const scaleIn = {
+  hidden: { opacity: 0, scale: 0.96 },
+  show: { opacity: 1, scale: 1 },
+};
+
 function FeatureCard({
   title,
   body,
@@ -25,7 +45,6 @@ function FeatureCard({
   return (
     <div className={`rounded-[28px] p-6 shadow-sm ${tones[tone]}`}>
       <div className="mb-3 text-sm font-semibold uppercase tracking-wide opacity-80">
-        Feature
       </div>
       <h3 className="text-2xl font-semibold tracking-tight">{title}</h3>
       <p className="mt-3 text-sm leading-7 opacity-90">{body}</p>
@@ -42,9 +61,10 @@ export default function HomePage() {
         <div className="mx-auto grid max-w-[1180px] items-start gap-10 px-6 py-12 lg:grid-cols-[1fr_0.9fr] lg:py-16">
           <div className="pt-2 lg:pt-8">
             <motion.div
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
+              initial="hidden"
+              animate="show"
+              variants={fadeUp}
+              transition={{ duration: 0.75, ease: "easeOut" }}
             >
               <div className="mb-4 inline-flex rounded-full bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700">
                 Simple quoting for trades and service businesses
@@ -85,6 +105,7 @@ export default function HomePage() {
         </div>
       </section>
 
+
       <section id="features" className="mx-auto max-w-[1180px] px-6 py-8 lg:py-12">
         <div className="mb-6">
           <div className="text-sm font-semibold uppercase tracking-[0.18em] text-emerald-600">
@@ -95,28 +116,58 @@ export default function HomePage() {
           </h2>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <motion.div
+              variants={staggerGroup}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.2 }}
+              className="grid gap-4 md:grid-cols-2 xl:grid-cols-4"
+            >
+            <motion.div
+              key="customer-first"
+              variants={scaleIn}
+              transition={{ duration: 0.45, ease: "easeOut" }}
+            >
           <FeatureCard
             tone="emerald"
             title="Customer-first flow"
             body="Start from the address book, pick a customer, then build the quote. Fast and natural."
           />
+          </motion.div>
+          <motion.div
+            key="beautiful-output"
+            variants={scaleIn}
+            transition={{ duration: 0.45, ease: "easeOut" }}
+          >
           <FeatureCard
             tone="blue"
             title="Beautiful quote output"
             body="Your builder and your public quote feel consistent, modern and ready to send."
           />
+          </motion.div>
+          <motion.div
+            key="send-accept"
+            variants={scaleIn}
+            transition={{ duration: 0.45, ease: "easeOut" }}
+          >
           <FeatureCard
             tone="amber"
             title="Send and accept"
             body="Email a quote link to your customer and let them accept it online without hassle."
           />
+          </motion.div>
+          <motion.div
+            key="branding"
+            variants={scaleIn}
+            transition={{ duration: 0.45, ease: "easeOut" }}
+          >
           <FeatureCard
             tone="rose"
             title="Professional branding"
             body="Use your logo, business details and polished layouts so every quote looks intentional."
           />
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       <section
@@ -134,7 +185,7 @@ export default function HomePage() {
               initial={{ opacity: 0, y: 18 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.35 }}
-              transition={{ duration: 0.45 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
               className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm"
             >
               <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-emerald-600 text-sm font-semibold text-white">
@@ -149,7 +200,13 @@ export default function HomePage() {
 
       <section id="who-its-for" className="bg-slate-50 py-14 lg:py-20">
       <div className="mx-auto max-w-[1180px] px-6">
-        <div className="mb-8 max-w-[720px]">
+        <motion.div
+          initial={{ opacity: 0, x: -24 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.65, ease: "easeOut" }}
+          className="mb-8 max-w-[720px]"
+        >
           <div className="text-sm font-semibold uppercase tracking-[0.18em] text-emerald-600">
             Who it’s for
           </div>
@@ -159,7 +216,7 @@ export default function HomePage() {
           <p className="mt-3 text-sm leading-7 text-slate-600">
             QuotePadPro is ideal for trades, services and growing businesses that want professional quotes without complicated software.
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid gap-4 md:grid-cols-3">
           {[
@@ -177,7 +234,13 @@ export default function HomePage() {
     </section>
 
       <section id="pricing" className="mx-auto max-w-[1180px] px-6 py-14 lg:py-20">
-        <div className="rounded-[32px] bg-emerald-600 px-8 py-10 text-white shadow-sm">
+        <motion.div
+            initial={{ opacity: 0, y: 32, scale: 0.98 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true, amount: 0.25 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            className="rounded-[32px] bg-emerald-600 px-8 py-10 text-white shadow-sm"
+          >
           <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
             <div>
               <div className="text-sm font-semibold uppercase tracking-[0.18em] text-emerald-100">
@@ -206,7 +269,7 @@ export default function HomePage() {
               </Link>
             </div>
           </div>
-        </div>
+        </motion.div>
       </section>
       <SiteFooter />
     </main>

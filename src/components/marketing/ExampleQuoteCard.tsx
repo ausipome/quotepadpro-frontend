@@ -23,7 +23,7 @@ function formatDate(date: Date) {
       initial={{ opacity: 0, y: 18, rotate: -1.2 }}
       whileInView={{ opacity: 1, y: 0, rotate: 0 }}
       viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 0.55, ease: "easeOut" }}
+      transition={{ duration: 0.9, ease: "easeOut", delay: 0.15 }}
       className="mx-auto w-full max-w-[760px]"
     >
       <div className="overflow-hidden rounded-[28px] border border-emerald-100 bg-white shadow-[0_30px_80px_-30px_rgba(15,23,42,0.25)]">
@@ -60,10 +60,10 @@ function formatDate(date: Date) {
               />
               </div>
               <div className="font-semibold text-slate-900">QuotePadPro Electrical</div>
-              <div>martyn@quotepadpro.com</div>
-              <div>07400 000000</div>
               <div>12 Riverside Court</div>
               <div>Solva, SA64 1AA</div>
+              <div>martyn@quotepadpro.com</div>
+              <div>07400 000000</div>
             </div>
           </div>
         </div>

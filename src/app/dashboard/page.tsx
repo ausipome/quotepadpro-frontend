@@ -113,6 +113,23 @@ export default function DashboardPage() {
             </div>
           ) : null}
 
+          {user && user.subscriptionStatus !== "trialing" && user.subscriptionStatus !== "active" ? (
+            <div className="mb-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  Your subscription is not complete yet. Please finish checkout to start using QuotePadPro.
+                </div>
+
+                <Link
+                  href="/checkout"
+                  className="inline-flex justify-center rounded-xl bg-rose-600 px-4 py-2 text-sm font-medium text-white hover:bg-rose-700"
+                >
+                  Complete checkout
+                </Link>
+              </div>
+            </div>
+          ) : null}
+
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             <Link
               href="/account/quotes"

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { apiFetch } from "@/lib/api";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { Contact, Quote } from "@/types";
@@ -25,7 +26,7 @@ function emptyItem(): ItemRow {
     name: "",
     description: "",
     quantity: "1",
-    unitPrice: "0",
+    unitPrice: "",
   };
 }
 
@@ -35,6 +36,7 @@ function formatMoney(value: number) {
 
 function formatDisplayDate(value?: string | null) {
   if (!value) return "Auto on save";
+
   const d = new Date(value);
   return d.toLocaleDateString("en-GB", {
     day: "2-digit",
@@ -64,22 +66,27 @@ export default function QuoteBuilder({
   const [savedQuoteNumber, setSavedQuoteNumber] = useState(
     quoteData?.quoteNumber || ""
   );
+
   const [savedQuoteDate, setSavedQuoteDate] = useState<string | null>(
     quoteData?.quoteDate || null
   );
 
   const [title, setTitle] = useState(quoteData?.title || "Quote");
   const [status, setStatus] = useState(quoteData?.status || "draft");
-  const [expiryDate, setExpiryDate] = useState(toInputDate(quoteData?.expiryDate));
+  const [expiryDate, setExpiryDate] = useState(
+    toInputDate(quoteData?.expiryDate)
+  );
   const [notes, setNotes] = useState(quoteData?.notes || "");
 
   const [vatMode, setVatMode] = useState(quoteData?.vatMode || "standard");
   const [vatRate, setVatRate] = useState<number>(quoteData?.vatRate || 20);
+
   const [discountType, setDiscountType] = useState(
     quoteData?.discountType || "fixed"
   );
-  const [discountValue, setDiscountValue] = useState<number>(
-    quoteData?.discountValue || 0
+
+  const [discountValue, setDiscountValue] = useState<string>(
+    quoteData?.discountValue ? String(quoteData.discountValue) : ""
   );
 
   const [customerDetails] = useState<Contact | null>(
@@ -92,13 +99,14 @@ export default function QuoteBuilder({
           name: item.name || "",
           description: item.description || "",
           quantity: String(item.quantity ?? 1),
-          unitPrice: String(item.unitPrice ?? 0),
+          unitPrice: item.unitPrice ? String(item.unitPrice) : "",
         }))
       : [emptyItem()]
   );
 
   const [loadingAction, setLoadingAction] = useState<"save" | null>(null);
   const [sending, setSending] = useState(false);
+
   const [message, setMessage] = useState<{
     type: "success" | "error";
     text: string;
@@ -106,6 +114,8 @@ export default function QuoteBuilder({
 
   const displayQuoteNumber = savedQuoteNumber || "Auto on save";
   const displayQuoteDate = formatDisplayDate(savedQuoteDate);
+
+  const parsedDiscountValue = Number(discountValue || 0);
 
   function handleItemChange(index: number, key: keyof ItemRow, value: string) {
     setItems((prev) => {
@@ -139,10 +149,11 @@ export default function QuoteBuilder({
 
   const discountAmount = useMemo(() => {
     if (discountType === "percent") {
-      return subtotal * (discountValue / 100);
+      return subtotal * (parsedDiscountValue / 100);
     }
-    return discountValue;
-  }, [subtotal, discountType, discountValue]);
+
+    return parsedDiscountValue;
+  }, [subtotal, discountType, parsedDiscountValue]);
 
   const discountedSubtotal = Math.max(subtotal - discountAmount, 0);
 
@@ -170,7 +181,7 @@ export default function QuoteBuilder({
       notes,
       subtotal,
       discountType,
-      discountValue,
+      discountValue: parsedDiscountValue,
       vatMode,
       vatRate,
       vatAmount,
@@ -178,6 +189,7 @@ export default function QuoteBuilder({
       items: items.map((item, index) => {
         const quantity = parseFloat(item.quantity || "0");
         const unitPrice = parseFloat(item.unitPrice || "0");
+
         return {
           name: item.name,
           description: item.description,
@@ -215,7 +227,7 @@ export default function QuoteBuilder({
       setVatMode(saved.vatMode);
       setVatRate(saved.vatRate);
       setDiscountType(saved.discountType);
-      setDiscountValue(saved.discountValue);
+      setDiscountValue(saved.discountValue ? String(saved.discountValue) : "");
 
       setMessage({ type: "success", text: "Quote saved successfully." });
     } catch (error) {
@@ -260,9 +272,14 @@ export default function QuoteBuilder({
     }
   }
 
+  const subscriptionIncomplete =
+    user &&
+    user.subscriptionStatus !== "trialing" &&
+    user.subscriptionStatus !== "active";
+
   return (
-    <div className="mx-auto max-w-[1180px]">
-      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+    <div className="mx-auto max-w-[1180px] px-4 sm:px-6 lg:px-0">
+      <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
           {backButton}
           <div>
@@ -275,22 +292,22 @@ export default function QuoteBuilder({
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
           {onHomeClick ? (
-              <button
-                type="button"
-                onClick={onHomeClick}
-                className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
-              >
-                Dashboard
-              </button>
-            ) : null}
+            <button
+              type="button"
+              onClick={onHomeClick}
+              className="inline-flex justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
+            >
+              Dashboard
+            </button>
+          ) : null}
 
           {onNewQuote ? (
             <button
               type="button"
               onClick={onNewQuote}
-              className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
+              className="inline-flex justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
             >
               New Quote
             </button>
@@ -299,8 +316,8 @@ export default function QuoteBuilder({
           <button
             type="button"
             onClick={handleSendQuote}
-            disabled={sending || !user?.emailVerified}
-            className="rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700 hover:bg-emerald-100 disabled:opacity-50"
+            disabled={sending || !user?.emailVerified || !!subscriptionIncomplete}
+            className="inline-flex justify-center rounded-xl border border-emerald-300 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700 hover:bg-emerald-100 disabled:opacity-50"
           >
             {sending ? "Sending..." : "Send Quote"}
           </button>
@@ -308,8 +325,8 @@ export default function QuoteBuilder({
           <button
             type="button"
             onClick={handleSave}
-            disabled={loadingAction === "save"}
-            className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-50"
+            disabled={loadingAction === "save" || !!subscriptionIncomplete}
+            className="inline-flex justify-center rounded-xl bg-emerald-600 px-3 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-50"
           >
             {loadingAction === "save" ? "Saving..." : "Save Quote"}
           </button>
@@ -317,10 +334,28 @@ export default function QuoteBuilder({
       </div>
 
       {user && !user.emailVerified ? (
-          <div className="mb-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-            Please confirm your email before sending quotes to customers.
+        <div className="mb-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          Please confirm your email before sending quotes to customers.
+        </div>
+      ) : null}
+
+      {subscriptionIncomplete ? (
+        <div className="mb-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              Your subscription is not complete yet. Please finish checkout to
+              start using QuotePadPro.
+            </div>
+
+            <Link
+              href="/checkout"
+              className="inline-flex justify-center rounded-xl bg-rose-600 px-4 py-2 text-sm font-medium text-white hover:bg-rose-700"
+            >
+              Complete checkout
+            </Link>
           </div>
-        ) : null}
+        </div>
+      ) : null}
 
       {message ? (
         <div
@@ -334,21 +369,26 @@ export default function QuoteBuilder({
         </div>
       ) : null}
 
-      <div className="rounded-[28px] border border-emerald-100 bg-white px-8 py-8 shadow-sm lg:px-12">
+      <div className="rounded-[28px] border border-emerald-100 bg-white px-4 py-6 shadow-sm sm:px-6 lg:px-12 lg:py-8">
         <div className="mb-8 flex flex-col gap-8 border-b border-slate-200 pb-8 md:flex-row md:justify-between">
           <div>
             <div className="text-3xl font-semibold tracking-tight text-emerald-700">
               {title || "Quote"}
             </div>
+
             <div className="mt-4 space-y-1 text-sm text-slate-600">
               <div>
-                <span className="font-medium text-slate-900">Quote Number:</span>{" "}
+                <span className="font-medium text-slate-900">
+                  Quote Number:
+                </span>{" "}
                 {displayQuoteNumber}
               </div>
+
               <div>
                 <span className="font-medium text-slate-900">Created:</span>{" "}
                 {displayQuoteDate}
               </div>
+
               <div>
                 <span className="font-medium text-slate-900">Status:</span>{" "}
                 <span className="capitalize">{status}</span>
@@ -371,9 +411,11 @@ export default function QuoteBuilder({
             <div className="font-medium text-slate-900">
               {user?.businessName || user?.name || "Your Business"}
             </div>
+
             {user?.businessAddress ? (
               <div className="whitespace-pre-wrap">{user.businessAddress}</div>
             ) : null}
+
             {user?.phone ? <div>{user.phone}</div> : null}
             {user?.email ? <div>{user.email}</div> : null}
           </div>
@@ -384,26 +426,44 @@ export default function QuoteBuilder({
             <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-emerald-600/70">
               Customer
             </div>
+
             {customerDetails ? (
               <div className="space-y-1 text-sm text-slate-700">
                 <div className="font-semibold text-slate-900">
                   {customerDetails.name}
                 </div>
-                {customerDetails.company ? <div>{customerDetails.company}</div> : null}
+
+                {customerDetails.company ? (
+                  <div>{customerDetails.company}</div>
+                ) : null}
+
                 {customerDetails.email ? <div>{customerDetails.email}</div> : null}
                 {customerDetails.phone ? <div>{customerDetails.phone}</div> : null}
-                {[customerDetails.address1, customerDetails.address2, customerDetails.city, customerDetails.county, customerDetails.postcode]
-                  .filter(Boolean)
-                  .length > 0 ? (
+
+                {[
+                  customerDetails.address1,
+                  customerDetails.address2,
+                  customerDetails.city,
+                  customerDetails.county,
+                  customerDetails.postcode,
+                ].filter(Boolean).length > 0 ? (
                   <div className="pt-1 text-slate-500">
-                    {[customerDetails.address1, customerDetails.address2, customerDetails.city, customerDetails.county, customerDetails.postcode]
+                    {[
+                      customerDetails.address1,
+                      customerDetails.address2,
+                      customerDetails.city,
+                      customerDetails.county,
+                      customerDetails.postcode,
+                    ]
                       .filter(Boolean)
                       .join(", ")}
                   </div>
                 ) : null}
               </div>
             ) : (
-              <div className="text-sm text-slate-500">No customer selected.</div>
+              <div className="text-sm text-slate-500">
+                No customer selected.
+              </div>
             )}
           </div>
 
@@ -440,7 +500,7 @@ export default function QuoteBuilder({
           </div>
         </div>
 
-        <div className="mb-5 flex items-center justify-between">
+        <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <div className="text-lg font-semibold text-slate-900">Items</div>
             <div className="text-sm text-slate-500">
@@ -451,14 +511,14 @@ export default function QuoteBuilder({
           <button
             type="button"
             onClick={handleAddItem}
-            className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
+            className="inline-flex justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
           >
             + Add Item
           </button>
         </div>
 
         <div className="overflow-hidden rounded-2xl border border-slate-200">
-          <div className="grid grid-cols-[1.15fr_1.6fr_0.5fr_0.7fr_0.7fr_0.45fr] gap-3 border-b border-slate-200 bg-slate-50 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
+          <div className="hidden gap-3 border-b border-slate-200 bg-slate-50 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500 md:grid md:grid-cols-[1.15fr_1.6fr_0.5fr_0.7fr_0.7fr_0.45fr]">
             <div>Item</div>
             <div>Description</div>
             <div>Qty</div>
@@ -476,49 +536,80 @@ export default function QuoteBuilder({
               return (
                 <div
                   key={index}
-                  className="grid grid-cols-[1.15fr_1.6fr_0.5fr_0.7fr_0.7fr_0.45fr] gap-3 px-4 py-3"
+                  className="grid gap-3 px-4 py-4 md:grid-cols-[1.15fr_1.6fr_0.5fr_0.7fr_0.7fr_0.45fr]"
                 >
-                  <input
-                    value={item.name}
-                    onChange={(e) =>
-                      handleItemChange(index, "name", e.target.value)
-                    }
-                    placeholder="Item"
-                    className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-900"
-                  />
-                  <input
-                    value={item.description}
-                    onChange={(e) =>
-                      handleItemChange(index, "description", e.target.value)
-                    }
-                    placeholder="Description"
-                    className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-900"
-                  />
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={item.quantity}
-                    onChange={(e) =>
-                      handleItemChange(index, "quantity", e.target.value)
-                    }
-                    className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-900"
-                  />
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={item.unitPrice}
-                    onChange={(e) =>
-                      handleItemChange(index, "unitPrice", e.target.value)
-                    }
-                    className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-900"
-                  />
-                  <div className="flex items-center text-sm font-medium text-slate-800">
-                    {formatMoney(lineTotal)}
+                  <div>
+                    <label className="mb-1 block text-xs font-medium text-slate-500 md:hidden">
+                      Item
+                    </label>
+                    <input
+                      value={item.name}
+                      onChange={(e) =>
+                        handleItemChange(index, "name", e.target.value)
+                      }
+                      placeholder="Item"
+                      className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-900"
+                    />
                   </div>
+
+                  <div>
+                    <label className="mb-1 block text-xs font-medium text-slate-500 md:hidden">
+                      Description
+                    </label>
+                    <input
+                      value={item.description}
+                      onChange={(e) =>
+                        handleItemChange(index, "description", e.target.value)
+                      }
+                      placeholder="Description"
+                      className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-900"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-1 block text-xs font-medium text-slate-500 md:hidden">
+                      Qty
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={item.quantity}
+                      onChange={(e) =>
+                        handleItemChange(index, "quantity", e.target.value)
+                      }
+                      className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-900"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-1 block text-xs font-medium text-slate-500 md:hidden">
+                      Price
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={item.unitPrice}
+                      onChange={(e) =>
+                        handleItemChange(index, "unitPrice", e.target.value)
+                      }
+                      placeholder="0.00"
+                      className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-900"
+                    />
+                  </div>
+
+                  <div>
+                    <div className="mb-1 block text-xs font-medium text-slate-500 md:hidden">
+                      Total
+                    </div>
+                    <div className="flex min-h-10 items-center rounded-lg bg-slate-50 px-3 text-sm font-medium text-slate-800 md:bg-transparent md:px-0">
+                      {formatMoney(lineTotal)}
+                    </div>
+                  </div>
+
                   <button
                     type="button"
                     onClick={() => handleRemoveItem(index)}
-                    className="text-sm font-medium text-rose-600 hover:text-rose-700"
+                    className="rounded-lg border border-rose-200 px-3 py-2 text-sm font-medium text-rose-600 hover:bg-rose-50 md:border-0 md:px-0"
                   >
                     Delete
                   </button>
@@ -542,7 +633,9 @@ export default function QuoteBuilder({
           </div>
 
           <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-            <div className="mb-4 text-lg font-semibold text-slate-900">Pricing</div>
+            <div className="mb-4 text-lg font-semibold text-slate-900">
+              Pricing
+            </div>
 
             <div className="space-y-4">
               <div>
@@ -567,7 +660,8 @@ export default function QuoteBuilder({
                   type="number"
                   step="0.01"
                   value={discountValue}
-                  onChange={(e) => setDiscountValue(Number(e.target.value))}
+                  onChange={(e) => setDiscountValue(e.target.value)}
+                  placeholder="0.00"
                   className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900"
                 />
               </div>
@@ -611,16 +705,19 @@ export default function QuoteBuilder({
               <span>Subtotal</span>
               <span>{formatMoney(subtotal)}</span>
             </div>
+
             {discountAmount > 0 ? (
-                <div className="flex justify-between text-slate-600">
-                  <span>Discount</span>
-                  <span>-{formatMoney(discountAmount)}</span>
-                </div>
-              ) : null}
+              <div className="flex justify-between text-slate-600">
+                <span>Discount</span>
+                <span>-{formatMoney(discountAmount)}</span>
+              </div>
+            ) : null}
+
             <div className="flex justify-between text-slate-600">
               <span>VAT</span>
               <span>{formatMoney(vatAmount)}</span>
             </div>
+
             <div className="mt-3 flex justify-between border-t border-emerald-100 pt-3 text-xl font-semibold text-emerald-700">
               <span>Total</span>
               <span>{formatMoney(total)}</span>
