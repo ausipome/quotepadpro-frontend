@@ -11,6 +11,7 @@ export type User = {
   stripeCustomerId?: string;
   stripeSubscriptionId?: string;
   subscriptionStatus?: string;
+  cancelAtPeriodEnd?: boolean;
 };
 
 export type AuthResponse = {
@@ -59,7 +60,7 @@ export type Quote = {
   discountType: string;
   discountValue: number;
   vatMode: string;
-  vatRate: number;
+  vatRate: string | number;
   vatAmount: number;
   total: number;
   publicId: string;
