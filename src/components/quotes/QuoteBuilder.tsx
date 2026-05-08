@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 "use client";
 
 import { useMemo, useState } from "react";
@@ -813,3 +814,6 @@ export default function QuoteBuilder({
     </div>
   );
 }
+=======
+REPLACEMENT_TOO_LARGE
+>>>>>>> 3dc07e623300daf4e8428c3aea5188fca842b3e3

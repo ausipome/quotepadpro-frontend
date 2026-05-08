@@ -6,9 +6,11 @@ import { API_BASE } from "@/lib/api";
 export default function AcceptQuoteButton({
   publicId,
   initialStatus,
+  isExpired,
 }: {
   publicId: string;
   initialStatus: string;
+  isExpired?: boolean;
 }) {
   const [status, setStatus] = useState(initialStatus);
   const [loading, setLoading] = useState(false);
@@ -44,6 +46,14 @@ export default function AcceptQuoteButton({
     return (
       <div className="rounded-2xl border border-green-200 bg-green-50 p-4 text-sm text-green-800">
         This quote has been accepted.
+      </div>
+    );
+  }
+
+  if (isExpired) {
+    return (
+      <div className="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
+        This quote has expired and can no longer be accepted online.
       </div>
     );
   }

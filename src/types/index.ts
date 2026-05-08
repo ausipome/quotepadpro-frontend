@@ -72,6 +72,7 @@ export type Quote = {
 
 export type PublicQuoteResponse = {
   quote: Quote;
+  isExpired?: boolean;
   owner: {
     name: string;
     businessName: string;

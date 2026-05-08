@@ -48,11 +48,17 @@ export default async function PublicQuotePage({
     );
   }
 
-  const { quote, owner } = data;
+  const { quote, owner, isExpired } = data;
 
   return (
     <main className="min-h-screen bg-white px-6 py-10">
       <div className="mx-auto max-w-[1180px] rounded-[28px] border border-emerald-100 bg-white p-8 shadow-sm lg:px-12">
+        {isExpired && quote.status !== "accepted" ? (
+          <div className="mb-6 rounded-2xl border border-rose-200 bg-rose-50 px-5 py-4 text-sm text-rose-700">
+            This quote expired on {formatDate(quote.expiryDate)} and can no longer be accepted online.
+          </div>
+        ) : null}
+
         <div className="mb-8 flex flex-col gap-8 border-b pb-8 md:flex-row md:justify-between">
           <div>
             <div className="text-3xl font-semibold tracking-tight text-emerald-700">
@@ -75,13 +81,18 @@ export default async function PublicQuotePage({
                 <span className="font-medium text-gray-900">Status:</span>{" "}
                 <span className="capitalize">{quote.status}</span>
               </div>
+              {quote.acceptedAt ? (
+                <div>
+                  <span className="font-medium text-gray-900">Accepted:</span>{" "}
+                  {formatDate(quote.acceptedAt)}
+                </div>
+              ) : null}
             </div>
           </div>
 
           <div className="text-sm text-gray-600 md:text-right">
             {owner.logoUrl ? (
               <div className="mb-3 flex justify-start md:justify-end">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={owner.logoUrl}
                   alt="Business logo"
@@ -130,7 +141,11 @@ export default async function PublicQuotePage({
           </div>
 
           <div className="md:justify-self-end">
-            <AcceptQuoteButton publicId={publicId} initialStatus={quote.status} />
+            <AcceptQuoteButton
+              publicId={publicId}
+              initialStatus={quote.status}
+              isExpired={isExpired}
+            />
           </div>
         </div>
 
