@@ -20,6 +20,7 @@ export default function ProfilePage() {
   });
 
   const [saving, setSaving] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
   const [message, setMessage] = useState<{
     type: "success" | "error";
     text: string;
@@ -110,6 +111,44 @@ export default function ProfilePage() {
       setSaving(false);
     }
   }
+
+  async function handleCancelSubscription() {
+    const confirmed = window.confirm(
+      "Are you sure you want to cancel your QuotePadPro subscription? You will keep access until the end of your current billing period or trial."
+    );
+
+    if (!confirmed) return;
+
+    setCancelling(true);
+    setMessage(null);
+
+    try {
+      await apiFetch("/billing/cancel-subscription", {
+        method: "POST",
+      });
+
+      await refreshMe();
+
+      setMessage({
+        type: "success",
+        text: "Your subscription has been set to cancel at the end of the current period.",
+      });
+    } catch (error) {
+      setMessage({
+        type: "error",
+        text:
+          error instanceof Error
+            ? error.message
+            : "Failed to cancel subscription.",
+      });
+    } finally {
+      setCancelling(false);
+    }
+  }
+
+  const canShowCancelLink =
+    user?.stripeSubscriptionId &&
+    (user.subscriptionStatus === "trialing" || user.subscriptionStatus === "active");
 
   return (
     <RequireAuth>
@@ -247,40 +286,64 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              <button
-                type="submit"
-                disabled={saving}
-                className="rounded-xl bg-emerald-600 px-5 py-3 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-50"
-              >
-                {saving ? "Saving..." : "Save Profile"}
-              </button>
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="rounded-xl bg-emerald-600 px-5 py-3 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-50"
+                >
+                  {saving ? "Saving..." : "Save Profile"}
+                </button>
+
+                {canShowCancelLink ? (
+                  <button
+                    type="button"
+                    onClick={handleCancelSubscription}
+                    disabled={cancelling}
+                    className="text-left text-sm text-slate-400 underline-offset-4 hover:text-rose-600 hover:underline disabled:opacity-50"
+                  >
+                    {cancelling ? "Cancelling..." : "Cancel subscription"}
+                  </button>
+                ) : null}
+              </div>
             </form>
 
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <div className="mb-4 text-lg font-semibold text-slate-900">Preview</div>
+            <div className="space-y-6">
+              <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div className="mb-4 text-lg font-semibold text-slate-900">Preview</div>
 
-              <div className="rounded-2xl border border-slate-200 p-5">
-                {user?.logoUrl ? (
-                  <div className="mb-4">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={user.logoUrl}
-                      alt="Logo preview"
-                      className="max-h-16 max-w-[180px] object-contain"
-                    />
-                  </div>
-                ) : null}
+                <div className="rounded-2xl border border-slate-200 p-5">
+                  {user?.logoUrl ? (
+                    <div className="mb-4">
+                      <img
+                        src={user.logoUrl}
+                        alt="Logo preview"
+                        className="max-h-16 max-w-[180px] object-contain"
+                      />
+                    </div>
+                  ) : null}
 
-                <div className="space-y-1 text-sm text-slate-700">
-                  <div className="font-semibold text-slate-900">
-                    {form.businessName || form.name || "Your Business"}
-                  </div>
-                  {user?.businessAddress ? (
-                      <div className="whitespace-pre-wrap">{user.businessAddress}</div>
+                  <div className="space-y-1 text-sm text-slate-700">
+                    <div className="font-semibold text-slate-900">
+                      {form.businessName || form.name || "Your Business"}
+                    </div>
+                    {form.businessAddress ? (
+                      <div className="whitespace-pre-wrap">{form.businessAddress}</div>
                     ) : null}
-                  {user?.email ? <div>{user.email}</div> : null}
-                  {form.phone ? <div>{form.phone}</div> : null}
+                    {user?.email ? <div>{user.email}</div> : null}
+                    {form.phone ? <div>{form.phone}</div> : null}
+                  </div>
                 </div>
+              </div>
+
+              <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6 text-sm text-slate-600">
+                <div className="font-medium text-slate-900">Subscription</div>
+                <div className="mt-1 capitalize">
+                  Status: {user?.subscriptionStatus || "unknown"}
+                </div>
+                <p className="mt-3 text-xs leading-5 text-slate-500">
+                  Cancelling keeps your account active until Stripe ends the current billing period or trial.
+                </p>
               </div>
             </div>
           </div>
