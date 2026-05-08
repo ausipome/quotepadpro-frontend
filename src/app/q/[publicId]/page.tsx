@@ -81,6 +81,12 @@ export default async function PublicQuotePage({
                 <span className="font-medium text-gray-900">Status:</span>{" "}
                 <span className="capitalize">{quote.status}</span>
               </div>
+              {quote.acceptedAt ? (
+                <div>
+                  <span className="font-medium text-gray-900">Accepted:</span>{" "}
+                  {formatDate(quote.acceptedAt)}
+                </div>
+              ) : null}
             </div>
           </div>
 
@@ -140,6 +146,67 @@ export default async function PublicQuotePage({
               initialStatus={quote.status}
               isExpired={isExpired}
             />
+          </div>
+        </div>
+
+        <div className="mb-8 overflow-hidden rounded-2xl border">
+          <div className="grid grid-cols-[1.2fr_1.6fr_0.5fr_0.7fr_0.7fr] gap-3 border-b bg-gray-50 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
+            <div>Item</div>
+            <div>Description</div>
+            <div>Qty</div>
+            <div>Price</div>
+            <div>Total</div>
+          </div>
+
+          <div className="divide-y">
+            {(quote.items || []).map((item) => (
+              <div
+                key={item.id ?? `${item.name}-${item.sortOrder}`}
+                className="grid grid-cols-[1.2fr_1.6fr_0.5fr_0.7fr_0.7fr] gap-3 px-4 py-3 text-sm"
+              >
+                <div className="font-medium text-gray-900">{item.name}</div>
+                <div className="text-gray-600">{item.description}</div>
+                <div>{item.quantity}</div>
+                <div>{formatMoney(item.unitPrice)}</div>
+                <div className="font-medium">{formatMoney(item.lineTotal)}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {quote.notes ? (
+          <div className="mb-8 rounded-2xl border p-4">
+            <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Notes
+            </div>
+            <p className="whitespace-pre-wrap text-sm text-gray-700">
+              {quote.notes}
+            </p>
+          </div>
+        ) : null}
+
+        <div className="ml-auto max-w-sm rounded-2xl border border-emerald-100 bg-slate-50 p-5">
+          <div className="mb-4 text-lg font-semibold">Summary</div>
+
+          <div className="space-y-2 text-sm">
+            <div className="flex justify-between">
+              <span>Subtotal</span>
+              <span>{formatMoney(quote.subtotal)}</span>
+            </div>
+            {quote.discountValue > 0 ? (
+              <div className="flex justify-between">
+                <span>Discount</span>
+                <span>-{formatMoney(quote.discountValue)}</span>
+              </div>
+            ) : null}
+            <div className="flex justify-between">
+              <span>VAT</span>
+              <span>{formatMoney(quote.vatAmount)}</span>
+            </div>
+            <div className="mt-3 flex justify-between border-t border-emerald-100 pt-3 text-lg font-semibold text-emerald-700">
+              <span>Total</span>
+              <span>{formatMoney(quote.total)}</span>
+            </div>
           </div>
         </div>
       </div>
