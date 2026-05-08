@@ -416,7 +416,7 @@ async function handleDelete() {
               />
               <input
                 name="postcode"
-                placeholder="Postcode / ZIP"
+                placeholder="Postcode"
                 value={form.postcode}
                 onChange={handleFormChange}
                 className="rounded-xl border px-3 py-2 md:col-span-2"

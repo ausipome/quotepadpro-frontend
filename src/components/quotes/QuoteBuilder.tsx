@@ -21,6 +21,11 @@ type ItemRow = {
   unitPrice: string;
 };
 
+type SaveOptions = {
+  showMessage?: boolean;
+  setSavingState?: boolean;
+};
+
 function emptyItem(): ItemRow {
   return {
     name: "",
@@ -71,6 +76,10 @@ export default function QuoteBuilder({
     quoteData?.quoteDate || null
   );
 
+  const [acceptedAt, setAcceptedAt] = useState<string | null>(
+    quoteData?.acceptedAt || null
+  );
+
   const [title, setTitle] = useState(quoteData?.title || "Quote");
   const [status, setStatus] = useState(quoteData?.status || "draft");
   const [expiryDate, setExpiryDate] = useState(
@@ -114,8 +123,9 @@ export default function QuoteBuilder({
 
   const displayQuoteNumber = savedQuoteNumber || "Auto on save";
   const displayQuoteDate = formatDisplayDate(savedQuoteDate);
-
   const parsedDiscountValue = Number(discountValue || 0);
+
+  const isAccepted = status === "accepted";
 
   function handleItemChange(index: number, key: keyof ItemRow, value: string) {
     setItems((prev) => {
@@ -164,16 +174,10 @@ export default function QuoteBuilder({
 
   const total = discountedSubtotal + vatAmount;
 
-  async function handleSave() {
-    if (!customerDetails) {
-      setMessage({ type: "error", text: "Please select a customer first." });
-      return;
-    }
+  function buildPayload() {
+    if (!customerDetails) return null;
 
-    setLoadingAction("save");
-    setMessage(null);
-
-    const payload = {
+    return {
       contactId: customerDetails.id,
       title,
       status,
@@ -200,6 +204,50 @@ export default function QuoteBuilder({
         };
       }),
     };
+  }
+
+  function applySavedQuote(saved: Quote) {
+    setQuoteId(saved.id);
+    setPublicId(saved.publicId);
+    setSavedQuoteNumber(saved.quoteNumber);
+    setSavedQuoteDate(saved.quoteDate);
+    setTitle(saved.title);
+    setStatus(saved.status);
+    setAcceptedAt(saved.acceptedAt);
+    setExpiryDate(toInputDate(saved.expiryDate));
+    setNotes(saved.notes);
+    setVatMode(saved.vatMode);
+    setVatRate(saved.vatRate);
+    setDiscountType(saved.discountType);
+    setDiscountValue(saved.discountValue ? String(saved.discountValue) : "");
+  }
+
+  async function saveQuote(options: SaveOptions = {}): Promise<Quote | null> {
+    const { showMessage = true, setSavingState = true } = options;
+
+    if (!customerDetails) {
+      setMessage({ type: "error", text: "Please select a customer first." });
+      return null;
+    }
+
+    if (isAccepted) {
+      const confirmed = window.confirm(
+        "This quote has already been accepted. If you save changes, the accepted status will be removed and the customer will need to review the quote again. Continue?"
+      );
+
+      if (!confirmed) return null;
+    }
+
+    const payload = buildPayload();
+    if (!payload) return null;
+
+    if (setSavingState) {
+      setLoadingAction("save");
+    }
+
+    if (showMessage) {
+      setMessage(null);
+    }
 
     try {
       let saved: Quote;
@@ -216,51 +264,58 @@ export default function QuoteBuilder({
         });
       }
 
-      setQuoteId(saved.id);
-      setPublicId(saved.publicId);
-      setSavedQuoteNumber(saved.quoteNumber);
-      setSavedQuoteDate(saved.quoteDate);
-      setTitle(saved.title);
-      setStatus(saved.status);
-      setExpiryDate(toInputDate(saved.expiryDate));
-      setNotes(saved.notes);
-      setVatMode(saved.vatMode);
-      setVatRate(saved.vatRate);
-      setDiscountType(saved.discountType);
-      setDiscountValue(saved.discountValue ? String(saved.discountValue) : "");
+      applySavedQuote(saved);
 
-      setMessage({ type: "success", text: "Quote saved successfully." });
+      if (showMessage) {
+        setMessage({ type: "success", text: "Quote saved successfully." });
+      }
+
+      return saved;
     } catch (error) {
       setMessage({
         type: "error",
         text: error instanceof Error ? error.message : "Failed to save quote.",
       });
+      return null;
     } finally {
-      setLoadingAction(null);
+      if (setSavingState) {
+        setLoadingAction(null);
+      }
     }
   }
 
-  async function handleSendQuote() {
-    if (!quoteId) {
-      setMessage({
-        type: "error",
-        text: "Save the quote before sending it.",
-      });
-      return;
-    }
+  async function handleSave() {
+    await saveQuote({ showMessage: true, setSavingState: true });
+  }
 
+  async function handleSendQuote() {
     setSending(true);
     setMessage(null);
 
     try {
-      await apiFetch(`/quotes/${quoteId}/send`, {
-        method: "POST",
+      const saved = await saveQuote({
+        showMessage: false,
+        setSavingState: false,
       });
 
-      setStatus("sent");
+      if (!saved) {
+        setSending(false);
+        return;
+      }
+
+      const sendResult = await apiFetch<{ sent: boolean; status?: string }>(
+        `/quotes/${saved.id}/send`,
+        {
+          method: "POST",
+        }
+      );
+
+      setStatus(sendResult.status || "sent");
+      setAcceptedAt(null);
+
       setMessage({
         type: "success",
-        text: "Quote email sent successfully.",
+        text: "Quote saved and email sent successfully.",
       });
     } catch (error) {
       setMessage({
@@ -313,19 +368,34 @@ export default function QuoteBuilder({
             </button>
           ) : null}
 
+          {publicId ? (
+            <Link
+              href={`/q/${publicId}`}
+              target="_blank"
+              className="inline-flex justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
+            >
+              Public View
+            </Link>
+          ) : null}
+
           <button
             type="button"
             onClick={handleSendQuote}
-            disabled={sending || !user?.emailVerified || !!subscriptionIncomplete}
+            disabled={
+              sending ||
+              loadingAction === "save" ||
+              !user?.emailVerified ||
+              !!subscriptionIncomplete
+            }
             className="inline-flex justify-center rounded-xl border border-emerald-300 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700 hover:bg-emerald-100 disabled:opacity-50"
           >
-            {sending ? "Sending..." : "Send Quote"}
+            {sending ? "Saving & Sending..." : "Send Quote"}
           </button>
 
           <button
             type="button"
             onClick={handleSave}
-            disabled={loadingAction === "save" || !!subscriptionIncomplete}
+            disabled={loadingAction === "save" || sending || !!subscriptionIncomplete}
             className="inline-flex justify-center rounded-xl bg-emerald-600 px-3 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-50"
           >
             {loadingAction === "save" ? "Saving..." : "Save Quote"}
@@ -354,6 +424,15 @@ export default function QuoteBuilder({
               Complete checkout
             </Link>
           </div>
+        </div>
+      ) : null}
+
+      {isAccepted ? (
+        <div className="mb-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          This quote has already been accepted
+          {acceptedAt ? ` on ${formatDisplayDate(acceptedAt)}` : ""}. Saving
+          changes will remove the accepted status and the customer will need to
+          review the updated quote again.
         </div>
       ) : null}
 
@@ -393,13 +472,19 @@ export default function QuoteBuilder({
                 <span className="font-medium text-slate-900">Status:</span>{" "}
                 <span className="capitalize">{status}</span>
               </div>
+
+              {acceptedAt ? (
+                <div>
+                  <span className="font-medium text-slate-900">Accepted:</span>{" "}
+                  {formatDisplayDate(acceptedAt)}
+                </div>
+              ) : null}
             </div>
           </div>
 
           <div className="text-sm text-slate-600 md:text-right">
             {user?.logoUrl ? (
               <div className="mb-3 flex justify-start md:justify-end">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={user.logoUrl}
                   alt="Business logo"
