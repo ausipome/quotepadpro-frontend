@@ -21,7 +21,7 @@ export default function AppTopBar({ showAuthLinks = false }: AppTopBarProps) {
             alt="QuotePadPro logo"
             width={200}
             height={60}
-            className="h-12 w-auto"
+            className="h-15 w-auto"
             priority
           />
         </Link>
