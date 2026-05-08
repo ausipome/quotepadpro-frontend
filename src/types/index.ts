@@ -60,7 +60,7 @@ export type Quote = {
   discountType: string;
   discountValue: number;
   vatMode: string;
-  vatRate: string | number;
+  vatRate: number;
   vatAmount: number;
   total: number;
   publicId: string;
