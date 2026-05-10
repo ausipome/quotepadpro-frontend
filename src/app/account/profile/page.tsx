@@ -147,8 +147,10 @@ export default function ProfilePage() {
   }
 
   const canShowCancelLink =
-    user?.stripeSubscriptionId &&
-    (user.subscriptionStatus === "trialing" || user.subscriptionStatus === "active");
+  user?.stripeSubscriptionId &&
+  (user.subscriptionStatus === "trialing" ||
+    user.subscriptionStatus === "active") &&
+  !user.cancelAtPeriodEnd;
 
   return (
     <RequireAuth>
@@ -339,11 +341,18 @@ export default function ProfilePage() {
               <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6 text-sm text-slate-600">
                 <div className="font-medium text-slate-900">Subscription</div>
                 <div className="mt-1 capitalize">
-                  Status: {user?.subscriptionStatus || "unknown"}
-                </div>
+                Status: {user?.subscriptionStatus || "unknown"}
+              </div>
+
+              {user?.cancelAtPeriodEnd ? (
+                <p className="mt-3 text-xs leading-5 text-amber-600">
+                  Your subscription is scheduled to cancel at the end of the current billing period.
+                </p>
+              ) : (
                 <p className="mt-3 text-xs leading-5 text-slate-500">
                   Cancelling keeps your account active until Stripe ends the current billing period or trial.
                 </p>
+              )}
               </div>
             </div>
           </div>
