@@ -11,6 +11,7 @@ export type User = {
   stripeCustomerId?: string;
   stripeSubscriptionId?: string;
   subscriptionStatus?: string;
+  cancelAtPeriodEnd?: boolean;
 };
 
 export type AuthResponse = {
