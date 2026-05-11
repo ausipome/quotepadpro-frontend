@@ -149,30 +149,36 @@ export default async function PublicQuotePage({
           </div>
         </div>
 
-        <div className="mb-8 overflow-hidden rounded-2xl border">
-          <div className="grid grid-cols-[1.2fr_1.6fr_0.5fr_0.7fr_0.7fr] gap-3 border-b bg-gray-50 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
-            <div>Item</div>
-            <div>Description</div>
-            <div>Qty</div>
-            <div>Price</div>
-            <div>Total</div>
-          </div>
+        <div className="mb-8 overflow-x-auto rounded-2xl border">
+  <div className="min-w-[760px]">
+    <div className="grid grid-cols-[1.2fr_2fr_0.45fr_0.7fr_0.7fr] gap-3 border-b bg-gray-50 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
+      <div>Item</div>
+      <div>Description</div>
+      <div className="text-right">Qty</div>
+      <div className="text-right">Price</div>
+      <div className="text-right">Total</div>
+    </div>
 
-          <div className="divide-y">
-            {(quote.items || []).map((item) => (
-              <div
-                key={item.id ?? `${item.name}-${item.sortOrder}`}
-                className="grid grid-cols-[1.2fr_1.6fr_0.5fr_0.7fr_0.7fr] gap-3 px-4 py-3 text-sm"
-              >
-                <div className="font-medium text-gray-900">{item.name}</div>
-                <div className="text-gray-600">{item.description}</div>
-                <div>{item.quantity}</div>
-                <div>{formatMoney(item.unitPrice)}</div>
-                <div className="font-medium">{formatMoney(item.lineTotal)}</div>
-              </div>
-            ))}
+    <div className="divide-y">
+      {(quote.items || []).map((item) => (
+        <div
+          key={item.id ?? `${item.name}-${item.sortOrder}`}
+          className="grid grid-cols-[1.2fr_2fr_0.45fr_0.7fr_0.7fr] gap-3 px-4 py-3 text-sm"
+        >
+          <div className="font-medium text-gray-900">{item.name}</div>
+          <div className="text-gray-600">{item.description}</div>
+          <div className="text-right">{item.quantity}</div>
+          <div className="text-right whitespace-nowrap">
+            {formatMoney(item.unitPrice)}
+          </div>
+          <div className="text-right font-medium whitespace-nowrap">
+            {formatMoney(item.lineTotal)}
           </div>
         </div>
+      ))}
+    </div>
+  </div>
+</div>
 
         {quote.notes ? (
           <div className="mb-8 rounded-2xl border p-4">

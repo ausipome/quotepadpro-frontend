@@ -596,7 +596,7 @@ export default function QuoteBuilder({
           <button
             type="button"
             onClick={handleAddItem}
-            className="inline-flex justify-center rounded-xl border border-slate-200 bg-emerald-600 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
+            className="inline-flex justify-center rounded-xl border border-slate-200 bg-emerald-600 px-4 py-2 text-sm text-white hover:bg-slate-50"
           >
             + Add Item
           </button>
