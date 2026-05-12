@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "./AuthProvider";
+import AppLoading from "@/components/ui/AppLoading";
 
 export function RequireAuth({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -15,7 +16,7 @@ export function RequireAuth({ children }: { children: React.ReactNode }) {
   }, [loading, token, router]);
 
   if (loading) {
-    return <div className="p-6">Loading...</div>;
+    return <AppLoading />;
   }
 
   if (!user) {

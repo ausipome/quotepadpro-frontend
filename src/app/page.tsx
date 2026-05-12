@@ -250,7 +250,7 @@ export default function HomePage() {
                 Simple pricing, no clutter
               </h2>
               <p className="mt-3 max-w-[620px] text-sm leading-7 text-emerald-50">
-                Start with a 30 day free trial, then keep your quoting workflow polished for £5/month.
+                Start with a 30 day free trial, then keep your quoting workflow polished for £5/month. No contract, cancel anytime.
               </p>
             </div>
 
@@ -258,6 +258,9 @@ export default function HomePage() {
               <div className="text-sm font-medium text-slate-500">Launch plan</div>
               <div className="mt-2 text-4xl font-semibold">£5/mo</div>
               <p className="mt-1 text-sm font-medium text-emerald-700">30 day free trial included</p>
+              <p className="mt-1 text-sm font-medium text-slate-500">
+                No contract. Cancel anytime.
+              </p>
               <p className="mt-2 text-sm text-slate-600">
                 Clean quoting, customer management, quote emailing and public quote links.
               </p>

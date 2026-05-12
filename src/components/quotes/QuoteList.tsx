@@ -43,6 +43,19 @@ function formatDate(value?: string | null) {
 export default function QuoteList({ onNewQuoteClick, onOpenQuote }: Props) {
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+
+  const filteredQuotes = quotes.filter((quote) => {
+  const term = search.trim().toLowerCase();
+
+  if (!term) return true;
+
+  return (
+    quote.quoteNumber?.toLowerCase().includes(term) ||
+    quote.title?.toLowerCase().includes(term) ||
+    quote.contact?.name?.toLowerCase().includes(term)
+  );
+});
 
   useEffect(() => {
     apiFetch<{ quotes: Quote[] }>("/quotes")
@@ -85,17 +98,26 @@ export default function QuoteList({ onNewQuoteClick, onOpenQuote }: Props) {
         </div>
       </div>
 
+      <div className="mb-5">
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search by quote reference, title or customer..."
+          className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none focus:border-emerald-400"
+        />
+      </div>
+
       {loading ? (
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
           Loading quotes...
         </div>
-      ) : quotes.length === 0 ? (
+      ) : filteredQuotes.length === 0 ? (
         <div className="rounded-3xl border border-slate-200 bg-white p-6 text-slate-500 shadow-sm">
           No quotes yet.
         </div>
       ) : (
         <div className="space-y-4">
-          {quotes.map((quote) => {
+          {filteredQuotes.map((quote) => {
             const expired = isExpired(quote);
 
             return (

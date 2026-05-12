@@ -88,7 +88,7 @@ export default function QuoteBuilder({
   const [notes, setNotes] = useState(quoteData?.notes || "");
 
   const [vatMode, setVatMode] = useState(quoteData?.vatMode || "standard");
-  const [vatRate, setVatRate] = useState<number>(quoteData?.vatRate || 20);
+  const [vatRate, setVatRate] = useState<number>(quoteData?.vatRate ?? 20);
 
   const [discountType, setDiscountType] = useState(
     quoteData?.discountType || "fixed"
@@ -217,7 +217,7 @@ export default function QuoteBuilder({
     setExpiryDate(toInputDate(saved.expiryDate));
     setNotes(saved.notes);
     setVatMode(saved.vatMode);
-    setVatRate(saved.vatRate);
+    setVatRate(saved.vatRate ?? 20);
     setDiscountType(saved.discountType);
     setDiscountValue(saved.discountValue ? String(saved.discountValue) : "");
   }
@@ -775,7 +775,10 @@ export default function QuoteBuilder({
                   type="number"
                   step="0.01"
                   value={vatRate}
-                  onChange={(e) => setVatRate(Number(e.target.value))}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setVatRate(value === "" ? 0 : Number(value));
+                  }}
                   className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900"
                   disabled={vatMode !== "standard"}
                 />

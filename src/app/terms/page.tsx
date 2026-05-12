@@ -32,20 +32,41 @@ export default function TermsPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-slate-900">Subscriptions and trials</h2>
-            <p className="mt-2">
-              QuotePadPro may offer a free trial followed by a paid monthly subscription. Pricing and trial details will be shown during signup.
-              Unless cancelled, your subscription may continue automatically after the trial period.
-            </p>
-          </section>
+              <h2 className="text-xl font-semibold text-slate-900">
+                Subscriptions, trials and billing
+              </h2>
+              <p className="mt-2">
+                QuotePadPro is offered as a monthly subscription. Where a free trial is provided,
+                the trial length and monthly price will be shown clearly during signup.
+              </p>
+              <p className="mt-2">
+                Unless cancelled before the end of the free trial, your subscription will continue
+                automatically and the payment method you provide may be charged monthly.
+              </p>
+              <p className="mt-2">
+                Subscription payments are processed by Stripe. QuotePadPro does not store your full
+                card details.
+              </p>
+            </section>
 
-          <section>
-            <h2 className="text-xl font-semibold text-slate-900">Cancellations</h2>
-            <p className="mt-2">
-              You can cancel your subscription in line with the cancellation options provided in the app or by contacting us.
-              Access may continue until the end of the current billing period unless stated otherwise.
-            </p>
-          </section>
+            <section>
+              <h2 className="text-xl font-semibold text-slate-900">
+                Cancelling your subscription
+              </h2>
+              <p className="mt-2">
+                There is no long-term contract. You can cancel your subscription at any time using
+                the cancellation option provided in the app or by contacting us.
+              </p>
+              <p className="mt-2">
+                When you cancel, your subscription will normally remain active until the end of the
+                billing period you have already paid for. After that point, access to paid features
+                may be restricted.
+              </p>
+              <p className="mt-2">
+                Cancelling stops future subscription renewals. It does not automatically refund
+                payments already taken unless required by law or agreed by us.
+              </p>
+            </section>
 
           <section>
             <h2 className="text-xl font-semibold text-slate-900">Acceptable use</h2>
@@ -75,7 +96,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-xl font-semibold text-slate-900">Contact</h2>
             <p className="mt-2">
-              For questions about these terms, contact hello@quotepadpro.com.
+             For questions about these terms, subscriptions or cancellations, contact hello@quotepadpro.com.
             </p>
           </section>
         </div>
